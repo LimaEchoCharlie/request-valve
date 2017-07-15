@@ -11,7 +11,7 @@ static long current_time( void ){
 static void top_up_bucket( tbucket_t* bucket ){
     long now = current_time();
     if( bucket->tokens < bucket->capacity ){
-        int new_total = bucket->tokens + 
+        float new_total = bucket->tokens + 
             (now - bucket->last_fill) * bucket->rate_per_sec;
 
         bucket->tokens = new_total > bucket->capacity ? 
@@ -20,7 +20,7 @@ static void top_up_bucket( tbucket_t* bucket ){
     bucket->last_fill = now;
 }
 
-void tbucket_init( tbucket_t* bucket, int capacity, int start_tokens, int rate_per_sec ){
+void tbucket_init( tbucket_t* bucket, int capacity, int start_tokens, float rate_per_sec ){
     bucket->capacity = capacity;
     bucket->tokens = start_tokens;
     bucket->rate_per_sec = rate_per_sec;

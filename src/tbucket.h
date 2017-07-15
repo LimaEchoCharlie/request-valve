@@ -19,7 +19,7 @@ typedef struct tbucket_s tbucket_t;
  * @param[in] start_tokens The number of tokens in the bucket at initialisation
  * @param[in] rate_per_sec The rate at which the bucket files (rate of flow R)
  */
-void tbucket_init( tbucket_t* bucket, int capacity, int start_tokens, int rate_per_sec );
+void tbucket_init( tbucket_t* bucket, int capacity, int start_tokens, float rate_per_sec );
 
 /**
  * @brief Count the number of tokens that are currently available in a given bucket
@@ -38,8 +38,8 @@ bool tbucket_acquire( tbucket_t* bucket, int tokens);
 
 struct tbucket_s{
     int capacity;       /**<Max capacity of bucket*/
-    int tokens;         /**<Numner of tokens currently in bucket*/
-    int rate_per_sec;   /**<Rate at which the bucket fills up*/
+    float tokens;       /**<Numner of tokens currently in bucket*/
+    float rate_per_sec; /**<Rate at which the bucket fills up*/
     long last_fill;     /**<Time when the bucket was last filled*/
 };
 

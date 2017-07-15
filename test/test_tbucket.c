@@ -65,6 +65,15 @@ TEST( tbucket, should_acquireAfterAPause)
     TEST_ASSERT_EQUAL_INT( 3, tbucket_available_tokens( bucket ));
 }
 
+TEST( tbucket, should_growCorrectlyWithFloatRate)
+{
+    tbucket_init( bucket, 100, 5, 0.5);
+    sleep(1);
+    TEST_ASSERT_EQUAL_INT( 5, tbucket_available_tokens( bucket ));
+    sleep(1);
+    TEST_ASSERT_EQUAL_INT( 6, tbucket_available_tokens( bucket ));
+}
+
 TEST_GROUP_RUNNER( tbucket ){
     RUN_TEST_CASE( tbucket, should_containNTokensAfterCreation);
     RUN_TEST_CASE( tbucket, should_containNTokensAfter3Seconds);
@@ -72,6 +81,7 @@ TEST_GROUP_RUNNER( tbucket ){
     RUN_TEST_CASE( tbucket, should_successfullyAcquire);
     RUN_TEST_CASE( tbucket, should_notAcquire);
     RUN_TEST_CASE( tbucket, should_acquireAfterAPause);
+    RUN_TEST_CASE( tbucket, should_growCorrectlyWithFloatRate);
 }
 
 static void RunAllTests(void)
