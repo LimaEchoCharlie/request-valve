@@ -13,6 +13,7 @@ static void top_up_bucket( tbucket_t* bucket ){
     if( bucket->tokens < bucket->capacity ){
         int new_total = bucket->tokens + 
             (now - bucket->last_fill) * bucket->rate_per_sec;
+
         bucket->tokens = new_total > bucket->capacity ? 
                             bucket->capacity : new_total;
     }
@@ -31,7 +32,6 @@ int tbucket_available_tokens( tbucket_t* bucket ){
     return bucket->tokens;
 }
 
-/*
 bool tbucket_acquire( tbucket_t* bucket, int tokens){
     top_up_bucket( bucket );
     if( tokens > bucket->tokens )
@@ -40,4 +40,3 @@ bool tbucket_acquire( tbucket_t* bucket, int tokens){
     bucket->tokens -= tokens;
     return true;
 }
- */

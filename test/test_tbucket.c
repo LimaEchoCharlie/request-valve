@@ -21,22 +21,57 @@ TEST_TEAR_DOWN( tbucket )
     free( bucket );
 } 
  
-TEST( tbucket, init_should_containNTokensAfterCreation)
+TEST( tbucket, should_containNTokensAfterCreation)
 {
     tbucket_init( bucket, 100, 60, 5);
     TEST_ASSERT_EQUAL_INT( 60, tbucket_available_tokens( bucket ));
 }
 
-TEST( tbucket, init_should_containNTokensAfter3Seconds)
+TEST( tbucket, should_containNTokensAfter3Seconds)
 {
     tbucket_init( bucket, 100, 60, 5);
     sleep(3);
     TEST_ASSERT_EQUAL_INT( 75, tbucket_available_tokens( bucket ));
 }
  
+TEST( tbucket, should_respectCapacity)
+{
+    tbucket_init( bucket, 100, 99, 5);
+    TEST_ASSERT_EQUAL_INT( 99, tbucket_available_tokens( bucket ));
+    sleep(1);
+    TEST_ASSERT_EQUAL_INT( 100, tbucket_available_tokens( bucket ));
+}
+
+TEST( tbucket, should_successfullyAcquire)
+{
+    tbucket_init( bucket, 100, 8, 5);
+    TEST_ASSERT( tbucket_acquire( bucket, 1 ));
+    TEST_ASSERT_EQUAL_INT( 7, tbucket_available_tokens( bucket ));
+}
+
+TEST( tbucket, should_notAcquire)
+{
+    tbucket_init( bucket, 100, 8, 5);
+    TEST_ASSERT( !tbucket_acquire( bucket, 10 ));
+    TEST_ASSERT_EQUAL_INT( 8, tbucket_available_tokens( bucket ));
+}
+
+TEST( tbucket, should_acquireAfterAPause)
+{
+    tbucket_init( bucket, 100, 8, 5);
+    TEST_ASSERT( !tbucket_acquire( bucket, 10 ));
+    sleep(1);
+    TEST_ASSERT( tbucket_acquire( bucket, 10 ));
+    TEST_ASSERT_EQUAL_INT( 3, tbucket_available_tokens( bucket ));
+}
+
 TEST_GROUP_RUNNER( tbucket ){
-    RUN_TEST_CASE( tbucket, init_should_containNTokensAfterCreation);
-    RUN_TEST_CASE( tbucket, init_should_containNTokensAfter3Seconds);
+    RUN_TEST_CASE( tbucket, should_containNTokensAfterCreation);
+    RUN_TEST_CASE( tbucket, should_containNTokensAfter3Seconds);
+    RUN_TEST_CASE( tbucket, should_respectCapacity);
+    RUN_TEST_CASE( tbucket, should_successfullyAcquire);
+    RUN_TEST_CASE( tbucket, should_notAcquire);
+    RUN_TEST_CASE( tbucket, should_acquireAfterAPause);
 }
 
 static void RunAllTests(void)
