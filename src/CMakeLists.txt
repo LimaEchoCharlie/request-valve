@@ -1,8 +1,9 @@
 set(LIB_SOURCE_FILES
-        tbucket.c)
+        tbucket.c
+        valve.c)
 
-add_library(Throttle  STATIC ${LIB_SOURCE_FILES})
+add_library(Valve  STATIC ${LIB_SOURCE_FILES})
 
-target_include_directories(Throttle PUBLIC
+target_include_directories(Valve PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
 )
