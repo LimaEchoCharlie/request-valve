@@ -1,3 +1,6 @@
+find_program( MEMORYCHECK_COMMAND valgrind )
+set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+
 add_executable(tbucket_app
     test_tbucket.c
 )

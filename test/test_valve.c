@@ -47,12 +47,44 @@ TEST( valve, should_beProperlyDestroyed)
     TEST_ASSERT( !valve_search(ip_addr0));
 }
 
+TEST( valve, should_failToAcquieAfterNRequests)
+{
+    char* ip_addr0 =  "111.111.111.111";
+    valve_set( 10, 2, 0);
+    TEST_ASSERT( valve_acquire(ip_addr0));
+    TEST_ASSERT( valve_acquire(ip_addr0));
+    TEST_ASSERT( !valve_acquire(ip_addr0));
+}
+
+TEST( valve, should_allowRequestsFromTwoIPAddresses)
+{
+    char* ip_addr0 =  "111.111.111.111";
+    char* ip_addr1 =  "111.111.111.112";
+    valve_set( 10, 2, 0);
+    TEST_ASSERT( valve_acquire(ip_addr0));
+    TEST_ASSERT( valve_acquire(ip_addr1));
+}
+TEST( valve, should_failToAcquieFor2AddressesAfterNRequests)
+{
+    char* ip_addr0 =  "111.111.111.111";
+    char* ip_addr1 =  "111.111.111.112";
+    valve_set( 10, 2, 0);
+    TEST_ASSERT( valve_acquire(ip_addr0));
+    TEST_ASSERT( valve_acquire(ip_addr1));
+    TEST_ASSERT( valve_acquire(ip_addr0));
+    TEST_ASSERT( !valve_acquire(ip_addr0));
+    TEST_ASSERT( valve_acquire(ip_addr1));
+    TEST_ASSERT( !valve_acquire(ip_addr1));
+}
 
 TEST_GROUP_RUNNER( valve ){
     RUN_TEST_CASE( valve, should_notContainAnythingAfterCreation);
     RUN_TEST_CASE( valve, should_allowSimpleAcquire);
     RUN_TEST_CASE( valve, should_containAddressAfterCreation);
     RUN_TEST_CASE( valve, should_beProperlyDestroyed);
+    RUN_TEST_CASE( valve, should_failToAcquieAfterNRequests);
+    RUN_TEST_CASE( valve, should_allowRequestsFromTwoIPAddresses);
+    RUN_TEST_CASE( valve, should_failToAcquieFor2AddressesAfterNRequests);
 }
 
 static void RunAllTests(void)

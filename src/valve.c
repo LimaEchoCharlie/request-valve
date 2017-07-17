@@ -10,19 +10,25 @@
 #include "tbucket.h"
 
 #define TABLE_SIZE 500
-#define MAX_KEY_LEN 45     //maximum IPv6 string length is 45
 
 static bool valve_is_free = true;
-static char* key_ptr;
-static tbucket_t* data_ptr;
+static tbucket_t data_ptr[TABLE_SIZE];
+static int ip_count_g = 0; 
+static int max_burst_g = 100; 
+static int start_tokens_g = 20;
+static float rate_per_sec_g = 5.0;
 
 void valve_create( void ){
     if( valve_is_free ){
-        key_ptr = malloc(TABLE_SIZE * MAX_KEY_LEN);
-        data_ptr = malloc(TABLE_SIZE * sizeof(tbucket_t));
         hcreate( TABLE_SIZE );
         valve_is_free = false;
     }
+}
+
+void valve_set( int max_burst, int start_tokens, float rate_per_sec){
+    max_burst_g = max_burst; 
+    start_tokens_g = start_tokens;
+    rate_per_sec_g = rate_per_sec;
 }
 
 void valve_destroy( void ){
@@ -48,18 +54,19 @@ bool valve_acquire( char* ip_address){
     if( entry_p == NULL ){
         ENTRY new_entry;
         
-        strcpy( key_ptr, ip_address );
-        tbucket_init( data_ptr, 0, 0, 0);
+        // this looks like a memory leak but it isn't, keys are freed by hdestroy
+        char * key = malloc(strlen( ip_address ) + 1 ); 
+        strcpy( key, ip_address );
+        tbucket_init( data_ptr+ip_count_g, max_burst_g, start_tokens_g - 1, 0); //toDo: add rate
 
-        new_entry.key = key_ptr;
-        new_entry.data = data_ptr;
-
-        key_ptr += strlen( ip_address ) + 1;
-        data_ptr++;
+        new_entry.key = key;
+        new_entry.data = data_ptr+ip_count_g;
+        ip_count_g++;
 
         entry_p = hsearch( new_entry, ENTER);
         return entry_p != NULL;
         }
-    //todo add token acquire
-    return false;
+
+    tbucket_t* bucket = (tbucket_t* )entry_p->data;
+    return tbucket_acquire( bucket, 1 );
 }
