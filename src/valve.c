@@ -57,7 +57,7 @@ bool valve_acquire( char* ip_address){
         // this looks like a memory leak but it isn't, keys are freed by hdestroy
         char * key = malloc(strlen( ip_address ) + 1 ); 
         strcpy( key, ip_address );
-        tbucket_init( data_ptr+ip_count_g, max_burst_g, start_tokens_g, 0); //toDo: add rate
+        tbucket_init( data_ptr+ip_count_g, max_burst_g, start_tokens_g, rate_per_sec_g);
 
         new_entry.key = key;
         new_entry.data = data_ptr+ip_count_g;

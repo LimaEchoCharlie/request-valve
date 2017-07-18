@@ -94,6 +94,17 @@ TEST( valve, should_allowRequestAfterPause)
     TEST_ASSERT( valve_acquire(ip_addr0));
 }
 
+TEST( valve, should_allowRequestAfterLongerPause)
+{
+    char* ip_addr0 =  "111.111.111.111";
+    valve_set( 10, 0, 0.5);
+    TEST_ASSERT( !valve_acquire(ip_addr0));
+    sleep(1);
+    TEST_ASSERT( !valve_acquire(ip_addr0));
+    sleep(1);
+    TEST_ASSERT( valve_acquire(ip_addr0));
+}
+
 TEST_GROUP_RUNNER( valve ){
     RUN_TEST_CASE( valve, should_notContainAnythingAfterCreation);
     RUN_TEST_CASE( valve, should_allowSimpleAcquire);
@@ -103,7 +114,8 @@ TEST_GROUP_RUNNER( valve ){
     RUN_TEST_CASE( valve, should_allowRequestsFromTwoIPAddresses);
     RUN_TEST_CASE( valve, should_failToAcquieFor2AddressesAfterNRequests);
     RUN_TEST_CASE( valve, should_failToAcquireFromAnEmptyValve);
-    //RUN_TEST_CASE( valve, should_allowRequestAfterPause);
+    RUN_TEST_CASE( valve, should_allowRequestAfterPause);
+    RUN_TEST_CASE( valve, should_allowRequestAfterLongerPause);
 }
 
 static void RunAllTests(void)
