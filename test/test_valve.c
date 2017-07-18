@@ -64,6 +64,7 @@ TEST( valve, should_allowRequestsFromTwoIPAddresses)
     TEST_ASSERT( valve_acquire(ip_addr0));
     TEST_ASSERT( valve_acquire(ip_addr1));
 }
+
 TEST( valve, should_failToAcquieFor2AddressesAfterNRequests)
 {
     char* ip_addr0 =  "111.111.111.111";
@@ -77,6 +78,22 @@ TEST( valve, should_failToAcquieFor2AddressesAfterNRequests)
     TEST_ASSERT( !valve_acquire(ip_addr1));
 }
 
+TEST( valve, should_failToAcquireFromAnEmptyValve)
+{
+    char* ip_addr0 =  "111.111.111.111";
+    valve_set( 10, 0, 0);
+    TEST_ASSERT( !valve_acquire(ip_addr0));
+}
+
+TEST( valve, should_allowRequestAfterPause)
+{
+    char* ip_addr0 =  "111.111.111.111";
+    valve_set( 10, 0, 1);
+    TEST_ASSERT( !valve_acquire(ip_addr0));
+    sleep(1);
+    TEST_ASSERT( valve_acquire(ip_addr0));
+}
+
 TEST_GROUP_RUNNER( valve ){
     RUN_TEST_CASE( valve, should_notContainAnythingAfterCreation);
     RUN_TEST_CASE( valve, should_allowSimpleAcquire);
@@ -85,6 +102,8 @@ TEST_GROUP_RUNNER( valve ){
     RUN_TEST_CASE( valve, should_failToAcquieAfterNRequests);
     RUN_TEST_CASE( valve, should_allowRequestsFromTwoIPAddresses);
     RUN_TEST_CASE( valve, should_failToAcquieFor2AddressesAfterNRequests);
+    RUN_TEST_CASE( valve, should_failToAcquireFromAnEmptyValve);
+    //RUN_TEST_CASE( valve, should_allowRequestAfterPause);
 }
 
 static void RunAllTests(void)
