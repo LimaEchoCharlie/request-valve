@@ -14,7 +14,7 @@ typedef struct tbucket_s tbucket_t;
 
 /**
  * @brief Initialises a bucket with a fixed rate of flow R with bursts <= N
- * @param[in] bucket The token bucket
+ * @param[in,out] bucket The token bucket
  * @param[in] capacity The maximum capacity of the bucket (max burst size N)
  * @param[in] start_tokens The number of tokens in the bucket at initialisation
  * @param[in] rate_per_sec The rate at which the bucket files (rate of flow R)
@@ -23,16 +23,16 @@ void tbucket_init( tbucket_t* bucket, int capacity, int start_tokens, float rate
 
 /**
  * @brief Count the number of tokens that are currently available in a given bucket
- * @param[in] bucket The token bucket
- * return Number of free tokens
+ * @param[in,out] bucket The token bucket
+ * @return Number of free tokens
  */
 int tbucket_available_tokens( tbucket_t* bucket );
 
 /**
  * @brief Acquires the given number of tokens from a given bucket
- * @param[in] bucket The token bucket
+ * @param[in,out] bucket The token bucket
  * @param[in] tokens The number of permits to acquire
- * return true if the tokens were acquired, false otherwise
+ * @return true if the tokens were acquired, false otherwise
  */
 bool tbucket_acquire( tbucket_t* bucket, int tokens);
 

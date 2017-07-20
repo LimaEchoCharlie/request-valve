@@ -21,7 +21,7 @@ TEST_TEAR_DOWN( valve )
 TEST( valve, should_notContainAnythingAfterCreation)
 {
     char* ip_addr0 =  "111.111.111.111";
-    TEST_ASSERT( !valve_search(ip_addr0));
+    TEST_ASSERT( !valve_contains(ip_addr0));
 }
 
 TEST( valve, should_allowSimpleAcquire)
@@ -34,17 +34,17 @@ TEST( valve, should_containAddressAfterCreation)
 {
     char* ip_addr0 =  "111.111.111.112";
     TEST_ASSERT( valve_acquire(ip_addr0));
-    TEST_ASSERT( valve_search(ip_addr0));
+    TEST_ASSERT( valve_contains(ip_addr0));
 }
 
 TEST( valve, should_beProperlyDestroyed)
 {
     char* ip_addr0 =  "111.111.111.111";
     TEST_ASSERT( valve_acquire(ip_addr0));
-    TEST_ASSERT( valve_search(ip_addr0));
+    TEST_ASSERT( valve_contains(ip_addr0));
     valve_destroy();
     valve_create();
-    TEST_ASSERT( !valve_search(ip_addr0));
+    TEST_ASSERT( !valve_contains(ip_addr0));
 }
 
 TEST( valve, should_failToAcquieAfterNRequests)

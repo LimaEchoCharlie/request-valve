@@ -45,7 +45,7 @@ static ENTRY* find( char* ip_address ){
     return found_entry_p;
 }
 
-bool valve_search( char* ip_address ){
+bool valve_contains( char* ip_address ){
     return find( ip_address ) != NULL;
 }
 
